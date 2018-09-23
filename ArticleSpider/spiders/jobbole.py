@@ -27,9 +27,9 @@ class JobboleSpider(scrapy.Spider):
             yield Request(url=parse.urljoin(response.url, post_url), meta={"front_image_url": image_url},
                           callback=self.parse_detail)
         #2.获取下一页的url并交给scrapy进行下载，下载完成后交给parse
-        # next_url = response.css(".next.page-numbers::attr(href)").extract_first("")
-        # if next_url:
-        #     yield Request(url=parse.urljoin(response.url, next_url), callback=self.parse)
+        next_url = response.css(".next.page-numbers::attr(href)").extract_first("")
+        if next_url:
+            yield Request(url=parse.urljoin(response.url, next_url), callback=self.parse)
 
     def parse_detail(self, response):
         # 1.使用xpath提取文章的具体字段

@@ -67,14 +67,14 @@ ROBOTSTXT_OBEY = True
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
 # 这是使用scrapy提供的json export 导出json文件
-#     'ArticleSpider.pipelines.JsonExporterPipeline': 2
+#     'ArticleSpider.pipelines.JsonExporterPipeline': 2,
     # 自定义json文件的导出
-    'ArticleSpider.pipelines.JsonWithEncodingPipeline': 2,
-    # 'scrapy.pipelines.images.ImagesPipeline': 1,
-      'ArticleSpider.pipelines.ArticleImagePipeline': 1,
+    'ArticleSpider.pipelines.JsonWithEncodingPipeline': 3,
+    'scrapy.pipelines.images.ImagesPipeline': 1,
+      'ArticleSpider.pipelines.ArticleImagePipeline': 2,
     #   'ArticleSpider.pipelines.ArticlespiderPipeline': 1
-    #  'ArticleSpider.pipelines.MysqlTwistedPipline': 1,
-    # 'ArticleSpider.pipelines.MysqlPipeline': 2
+    #  'ArticleSpider.pipelines.MysqlTwistedPipline': 3
+    # 'ArticleSpider.pipelines.MysqlPipeline': 3
 }
 IMAGES_URLS_FIELD = "front_image_url"
 project_dir = os.path.abspath(os.path.dirname(__file__))
@@ -103,7 +103,7 @@ AUTOTHROTTLE_ENABLED = True
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 
-MYSQL_HOST = "192.168.42.9"
+MYSQL_HOST = "127.0.0.1"
 MYSQL_DBNAME = "spider"
 MYSQL_USER = "root"
 MYSQL_PASSWORD = "111111"

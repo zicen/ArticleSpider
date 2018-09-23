@@ -56,6 +56,20 @@ class JobBoleArticleItemOld(scrapy.Item):
     tags = scrapy.Field()
     content = scrapy.Field()
 
+    def get_insert_sql(self):
+        insert_sql = """
+                   insert into article(title,create_date,url,url_object_id,front_image_url,front_image_path,comment_nums,fav_nums,praise_nums,tags,content)
+                   values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) 
+               """
+        if "front_image_path" in self:
+            xxx = self["front_image_path"]
+        else:
+            xxx = ""
+        params = (self["title"], self["create_date"], self["url"], self["url_object_id"],
+                                         self["front_image_url"],xxx, self["comment_nums"],
+                                         self["fav_nums"],
+                                         self["praise_nums"], self["tags"], self["content"])
+        return insert_sql, params
 
 
 
@@ -91,9 +105,12 @@ class JobBoleArticleItem(scrapy.Item):
                    insert into article(title,create_date,url,url_object_id,front_image_url,front_image_path,comment_nums,fav_nums,praise_nums,tags,content)
                    values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) 
                """
-
+        if "front_image_path" in self:
+            xxx = self["front_image_path"]
+        else:
+            xxx = ""
         params = (self["title"], self["create_date"], self["url"], self["url_object_id"],
-                                         self["front_image_url"], self["front_image_path"], self["comment_nums"],
+                                         self["front_image_url"],  xxx, self["comment_nums"],
                                          self["fav_nums"],
                                          self["praise_nums"], self["tags"], self["content"])
         return insert_sql, params

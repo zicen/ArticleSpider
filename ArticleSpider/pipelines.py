@@ -23,7 +23,7 @@ class ArticlespiderPipeline(object):
 # 第一种保存到mysql的方式，但是是同步的插入
 class MysqlPipeline(object):
     def __init__(self):
-        self.conn = MySQLdb.connect('192.168.42.9"', 'root', '111111', 'spider', charset="utf8", use_unicode=True)
+        self.conn = MySQLdb.connect('127.0.0.1', 'root', '111111', 'spider', charset="utf8", use_unicode=True)
         self.cursor = self.conn.cursor()
 
     def process_item(self, item, spider):
@@ -36,10 +36,6 @@ class MysqlPipeline(object):
                                          item["fav_nums"],
                                          item["praise_nums"], item["tags"], item["content"]))
         self.conn.commit()
-
-
-if __name__ == '__main__':
-    pass
 
 
 # 第二种保存到mysql的方式，是异步的。为什么我们有了同步的方式之后还要再写一个异步的呢？
@@ -85,8 +81,9 @@ class ArticleImagePipeline(ImagesPipeline):
         if "front_image_url" in item:
             for ok, value in results:
                 image_file_path = value["path"]
-            item["front_image_path"] = image_file_path
+                item["front_image_path"] = image_file_path
         return item
+
 
 # 这是使用scrapy提供的json export 导出json文件
 class JsonExporterPipeline(object):
@@ -104,15 +101,27 @@ class JsonExporterPipeline(object):
         return item
 
 
-
-
-#自定义json文件的导出
+# 自定义json文件的导出(有问题，未解决)
+"""
+ raise TypeError(repr(o) + " is not JSON serializable")
+TypeError: datetime.date(2018, 8, 31) is not JSON serializable
+出现这个错误的原因就是create_date这个字段不能解析成JSON格式的原因，我在jobbole注释掉
+# article_item["create_date"] = create_date
+就好了。权宜之计，先不用这个字段了。
+version2:
+加上下面的这句判断解决上次的那个问题
+        if "create_date" in item:
+            item["create_date"] = str(item["create_date"])
+"""
 class JsonWithEncodingPipeline(object):
     # 自定义json文件的导出
     def __init__(self):
         self.file = codecs.open('article.json', 'w', encoding="utf-8")
 
     def process_item(self, item, spider):
+        if "create_date" in item:
+            item["create_date"] = str(item["create_date"])
+
         lines = json.dumps(dict(item), ensure_ascii=False) + "\n"
         self.file.write(lines)
         return item
