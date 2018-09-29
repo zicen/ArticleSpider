@@ -1,0 +1,17 @@
+'查看全部 793 个回答' response.css(".QuestionMainAction::text").extract()[0]
+
+response.css(".QuestionFollowStatus-counts .NumberBoard-itemValue::text").extract()[0]
+'4,010'
+
+
+response.css(".QuestionFollowStatus-counts .NumberBoard-itemValue::text").extract()[1]
+'2,567,552'
+
+ response.css(".QuestionHeader-Comment button::text")
+ [<Selector xpath="descendant-or-self::*[@class and contains(concat(' ', normalize-space(@class), ' '), ' QuestionHeader-Comment ')]/descendant-or-self::*/button/text()" data='63 条评论'>]
+
+response.css(".QuestionHeader-detail span::text")
+[<Selector xpath="descendant-or-self::*[@class and contains(concat(' ', normalize-space(@class), ' '), ' QuestionHeader-detail ')]/descendant-or-self::*/span/text()" data='补充提问：为什么不是现在两倍大小的肾而是两个肾呢？'>]
+
+response.css(".QuestionHeader-title::text")
+[<Selector xpath="descendant-or-self::*[@class and contains(concat(' ', normalize-space(@class), ' '), ' QuestionHeader-title ')]/text()" data='既然一个肾足够了，为什么人会进化出两个肾？'>]

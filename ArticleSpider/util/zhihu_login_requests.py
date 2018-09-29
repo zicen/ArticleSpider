@@ -47,7 +47,7 @@ def get_xsrf():
     else:
         print("xsrf:null")
         return ""
-
+zhihu.py
 
 def get_index():
     response = session.get("https://www.zhihu.com", headers=header)

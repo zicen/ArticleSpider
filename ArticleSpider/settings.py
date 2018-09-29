@@ -20,7 +20,7 @@ NEWSPIDER_MODULE = 'ArticleSpider.spiders'
 # USER_AGENT = 'ArticleSpider (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 # CONCURRENT_REQUESTS = 32
@@ -34,7 +34,7 @@ ROBOTSTXT_OBEY = True
 # CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-# COOKIES_ENABLED = False
+COOKIES_ENABLED = True
 
 # Disable Telnet Console (enabled by default)
 # TELNETCONSOLE_ENABLED = False
@@ -69,11 +69,11 @@ ITEM_PIPELINES = {
 # 这是使用scrapy提供的json export 导出json文件
 #     'ArticleSpider.pipelines.JsonExporterPipeline': 2,
     # 自定义json文件的导出
-    'ArticleSpider.pipelines.JsonWithEncodingPipeline': 3,
-    'scrapy.pipelines.images.ImagesPipeline': 1,
-      'ArticleSpider.pipelines.ArticleImagePipeline': 2,
+    # 'ArticleSpider.pipelines.JsonWithEncodingPipeline': 3,
+    # 'scrapy.pipelines.images.ImagesPipeline': 1,
+    #   'ArticleSpider.pipelines.ArticleImagePipeline': 2,
     #   'ArticleSpider.pipelines.ArticlespiderPipeline': 1
-    #  'ArticleSpider.pipelines.MysqlTwistedPipline': 3
+     'ArticleSpider.pipelines.MysqlTwistedPipline': 3
     # 'ArticleSpider.pipelines.MysqlPipeline': 3
 }
 IMAGES_URLS_FIELD = "front_image_url"
@@ -107,3 +107,8 @@ MYSQL_HOST = "127.0.0.1"
 MYSQL_DBNAME = "spider"
 MYSQL_USER = "root"
 MYSQL_PASSWORD = "111111"
+
+
+
+SQL_DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+SQL_DATE_FORMAT = "%Y-%m-%d"
