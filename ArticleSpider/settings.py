@@ -53,9 +53,10 @@ COOKIES_ENABLED = True
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-# DOWNLOADER_MIDDLEWARES = {
-#    'ArticleSpider.middlewares.ArticlespiderDownloaderMiddleware': 543,
-# }
+DOWNLOADER_MIDDLEWARES = {
+    # 'ArticleSpider.middlewares.ArticlespiderDownloaderMiddleware': 543,
+    'ArticleSpider.middlewares.RandomUserAgentMiddleware': 1,
+}
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
@@ -66,14 +67,14 @@ COOKIES_ENABLED = True
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-# 这是使用scrapy提供的json export 导出json文件
-#     'ArticleSpider.pipelines.JsonExporterPipeline': 2,
+    # 这是使用scrapy提供的json export 导出json文件
+    #     'ArticleSpider.pipelines.JsonExporterPipeline': 2,
     # 自定义json文件的导出
     # 'ArticleSpider.pipelines.JsonWithEncodingPipeline': 3,
     # 'scrapy.pipelines.images.ImagesPipeline': 1,
     #   'ArticleSpider.pipelines.ArticleImagePipeline': 2,
     #   'ArticleSpider.pipelines.ArticlespiderPipeline': 1
-     'ArticleSpider.pipelines.MysqlTwistedPipline': 3
+    'ArticleSpider.pipelines.MysqlTwistedPipline': 3
     # 'ArticleSpider.pipelines.MysqlPipeline': 3
 }
 IMAGES_URLS_FIELD = "front_image_url"
@@ -101,14 +102,19 @@ AUTOTHROTTLE_ENABLED = True
 # HTTPCACHE_DIR = 'httpcache'
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+import os
+import sys
 
+BASE_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+print(BASE_DIR)
+sys.path.insert(0, os.path.join(BASE_DIR, "ArticleSpider"))
 
 MYSQL_HOST = "127.0.0.1"
 MYSQL_DBNAME = "spider"
 MYSQL_USER = "root"
 MYSQL_PASSWORD = "111111"
 
-
+RANDOM_UA_TYPE = "random"
 
 SQL_DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 SQL_DATE_FORMAT = "%Y-%m-%d"

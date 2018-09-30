@@ -10,7 +10,8 @@ import re
 import datetime
 from scrapy.loader import ItemLoader
 from  scrapy.loader.processors  import MapCompose,TakeFirst,Join
-from settings import SQL_DATETIME_FORMAT,SQL_DATE_FORMAT
+from ArticleSpider.settings import SQL_DATETIME_FORMAT,SQL_DATE_FORMAT
+from w3lib.html import remove_tags
 
 def date_convert(value):
     try:
@@ -193,6 +194,69 @@ class ZhihuAnswerItem(scrapy.Item):
             self["author_id"], self["content"], self["parise_num"],
             self["comments_num"], create_time, update_time,
             self["crawl_time"].strftime(SQL_DATETIME_FORMAT),
+        )
+
+        return insert_sql, params
+
+def remove_splash(value):
+    #去掉工作城市的斜线
+    return value.replace("/","")
+
+def handle_jobaddr(value):
+    addr_list = value.split("\n")
+    addr_list = [item.strip() for item in addr_list if item.strip()!="查看地图"]
+    return "".join(addr_list)
+
+class LagouJobItemLoader(ItemLoader):
+    #自定义itemloader
+    default_output_processor = TakeFirst()
+
+class LagouJobItem(scrapy.Item):
+    url = scrapy.Field()
+    url_object_id = scrapy.Field()
+    title = scrapy.Field()
+    salary = scrapy.Field()
+    job_city = scrapy.Field(
+        input_processor=MapCompose(remove_splash)
+    )
+    work_years = scrapy.Field(
+        input_processor=MapCompose(remove_splash)
+    )
+    degree_need = scrapy.Field(
+        input_processor=MapCompose(remove_splash)
+    )
+    job_type = scrapy.Field()
+    pulish_time = scrapy.Field()
+    tags = scrapy.Field()
+    job_advantage = scrapy.Field()
+    job_desc = scrapy.Field()
+    job_addr = scrapy.Field(
+        input_processor=MapCompose(remove_tags,handle_jobaddr)
+    )
+    company_url = scrapy.Field()
+    company_name = scrapy.Field()
+    crawl_time = scrapy.Field()
+    crawl_update_time = scrapy.Field()
+
+    def get_insert_sql(self):
+        #插入知乎question表的sql语句
+        crawl_time = datetime.datetime.fromtimestamp(self["create_time"]).strftime(SQL_DATETIME_FORMAT)
+        crawl_update_time = datetime.datetime.fromtimestamp(self["update_time"]).strftime(SQL_DATETIME_FORMAT)
+        insert_sql = """
+            insert into lagou_job(url, url_object_id, title, salary, job_city, work_years, degree_need,
+              job_type, pulish_time, tags,job_advantage,job_desc,job_addr,company_url,company_name
+              ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s)
+              ON DUPLICATE KEY UPDATE title=VALUES(title), salary=VALUES(salary), job_city=VALUES(job_city),
+              work_years=VALUES(work_years),degree_need=VALUES(degree_need),job_type=VALUES(job_type),pulish_time=VALUES(pulish_time),
+              tags=VALUES(tags),job_advantage=VALUES(job_advantage),job_desc=VALUES(job_desc),job_addr=VALUES(job_addr),
+              company_url=VALUES(company_url),company_name=VALUES(company_name),crawl_update_time=VALUES(crawl_update_time)
+        """
+        params = (
+            self["url"], self["url_object_id"], self["title"],
+            self["salary"], self["job_city"], self["work_years"],
+            self["degree_need"], self["job_type"], self["pulish_time"],
+            self["tags"],self["job_advantage"], self["job_desc"],
+            self["job_addr"],self["company_url"], self["company_name"],crawl_time,crawl_update_time
         )
 
         return insert_sql, params
