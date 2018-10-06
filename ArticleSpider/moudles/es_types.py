@@ -4,7 +4,17 @@ from elasticsearch_dsl import DocType, Date, Nested, Boolean, \
     analyzer, Completion, Keyword, Text, Integer
 
 from elasticsearch_dsl.connections import connections
+
 connections.create_connection(hosts=["localhost"])
+from elasticsearch_dsl.analysis import CustomAnalyzer as _CustomAnalyzer
+
+
+class CustomAnalyzer(_CustomAnalyzer):
+    def get_analysis_definition(self):
+        return {}
+
+
+ik_analyzer = CustomAnalyzer("ik_max_word", filter=["lowercase"])
 
 
 class ArticleType(DocType):
@@ -17,6 +27,7 @@ class ArticleType(DocType):
     fav_nums = Integer()
     tags = Text(analyzer="ik_max_word")
     content = Text(analyzer="ik_max_word")
+    suggest = Completion(analyzer=ik_analyzer)
 
     class Meta:
         index = "jobbole"
@@ -33,17 +44,16 @@ class LagouJobType(DocType):
     job_type = Keyword()
     job_desc = Text(analyzer="ik_max_word")
     company_url = Keyword()
+    url = Keyword()
     company_name = Keyword()
-    crawl_time = Date()
+    publish_time = Date()
+    suggest = Completion(analyzer=ik_analyzer)
 
     class Meta:
         index = "lagou"
         doc_type = "job"
 
 
-
-
-
 if __name__ == '__main__':
     ArticleType().init()
-    # LagouJobType.init()
+    LagouJobType.init()
