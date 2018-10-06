@@ -113,6 +113,8 @@ version2:
         if "create_date" in item:
             item["create_date"] = str(item["create_date"])
 """
+
+
 class JsonWithEncodingPipeline(object):
     # 自定义json文件的导出
     def __init__(self):
@@ -128,3 +130,13 @@ class JsonWithEncodingPipeline(object):
 
     def spider_closed(self, spider):
         self.file.close()
+
+
+from ArticleSpider.moudles.es_types import ArticleType
+
+
+class ElasticsearchPipline(object):
+    # 将数据写入到es中
+    def process_item(self, item, spider):
+        item.save_to_es()
+        return item

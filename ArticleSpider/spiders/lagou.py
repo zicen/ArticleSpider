@@ -4,7 +4,7 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 import re
 import json
-import datetime
+from _datetime import datetime
 from ArticleSpider.util.common import get_md5
 try:
     import urlparse as parse
@@ -45,6 +45,7 @@ class LagouSpider(CrawlSpider):
         item_loader.add_css("company_name", "#job_company dt a img::attr(alt)")
         item_loader.add_css("company_url", "#job_company dt a::attr(href)")
         item_loader.add_value("crawl_time", datetime.now())
+        item_loader.add_value("crawl_update_time", datetime.now())
 
         jobItem = item_loader.load_item()
         return jobItem
